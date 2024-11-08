@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/* This CSS was adapted from various tutorials on web design and styling best practices */
+/*
+// This method was adapted from the Express documentation on routing and various tutorials on transaction management
+// https://expressjs.com/en/guide/routing.html
+// Express Documentation
+// https://expressjs.com/ */
