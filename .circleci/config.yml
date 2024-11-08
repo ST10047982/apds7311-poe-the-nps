@@ -1,4 +1,9 @@
+version: 2.1
 
+orbs:
+  node: circleci/node@5  # Use CircleCI's Node.js orb for easier configuration
+
+jobs:
   test-node:
     # Install node dependencies and run tests
     executor: node/default
@@ -8,6 +13,7 @@
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
+      # Optionally uncomment and run tests if you have tests
       # - run:
       #     name: Run tests
       #     command: npm test --passWithNoTests
@@ -22,11 +28,12 @@
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Run build
           command: npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
+      # Copy build output to artifacts directory
       - run:
           name: Copy artifacts
           command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
