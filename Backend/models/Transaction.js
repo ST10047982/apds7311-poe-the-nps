@@ -46,11 +46,12 @@ const TransactionSchema = new mongoose.Schema({
     paymentMethod: {
         type: String,
         required: true,
-        enum: ['bank_transfer', 'credit_card', 'paypal'],
+        enum: ['Credit Card', 'Debit Card', 'Bank Transfer', 'Paypal'],
     },
     status: {
         type: String,
         required: true,
+        default: "Pending",
     }
 });
 

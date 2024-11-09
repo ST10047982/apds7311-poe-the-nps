@@ -84,8 +84,12 @@ router.post('/create', authMiddleware, async (req, res) => {
     if (!validateSwiftCode(swiftCode)) return res.status(400).json({ message: 'Invalid SWIFT code' });
 
     try {
-        const fromUser = await User.findOne({ accountNumber: fromAccountNumber.trim(), active: true }).lean();
-        const toUser = await User.findOne({ accountNumber: toAccountNumber.trim(), active: true }).lean();
+
+        console.log("From Account Number:", fromAccountNumber);
+console.log("To Account Number:", toAccountNumber);
+
+        const fromUser = await User.findOne({ accountNumber: fromAccountNumber.trim() }).lean();
+        const toUser = await User.findOne({ accountNumber: toAccountNumber.trim() }).lean();
 
         if (!fromUser || !toUser) {
             return res.status(404).json({
