@@ -33,29 +33,27 @@ const TransactionSchema = new mongoose.Schema({
     },
     currency: {
         type: String,
-        enum: ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'ZAR', 'CAD', 'CHF', 'CNY'],
         required: true,
+        enum: ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'ZAR', 'CAD', 'CHF', 'CNY'],
         match: /^[A-Z]{3}$/,
     },
     swiftCode: {
         type: String,
         required: true,
-        enum: SWIFT_CODES.map(swift => swift.code), 
-        match: /^[A-Z0-9]{8,11}$/, 
+        enum: SWIFT_CODES.map(swift => swift.code),
+        match: /^[A-Z0-9]{8,11}$/,
     },
     paymentMethod: {
         type: String,
-       // enum: ['Credit Card', 'Debit Card', 'Bank Transfer', 'Paypal'],
         required: true,
+        enum: ['bank_transfer', 'credit_card', 'paypal'],
     },
-    status:{
+    status: {
         type: String,
-        required: true
-
+        required: true,
     }
-
-    
 });
+
 
 // Export the transaction model
 export default mongoose.model('Transaction', TransactionSchema);

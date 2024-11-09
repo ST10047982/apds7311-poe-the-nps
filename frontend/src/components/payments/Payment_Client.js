@@ -5,10 +5,6 @@ import './Payment_Client.css'; // Import your CSS file for styling
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-// For more information, visit: https://reactrouter.com/en/main/start/overview
-// Additional reference: https://ui.dev/react-router-tutorial
-
-// Validation schema using Yup for form validation
 const validationSchema = Yup.object({
   fromAccountNumber: Yup.string().required('From Account is required'),
   toAccountNumber: Yup.string().required('To Account is required'),
@@ -23,7 +19,6 @@ const validationSchema = Yup.object({
 });
 
 function Payments_Client() {
-
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]); // State to store fetched transactions
   const token = localStorage.getItem('token');
@@ -32,12 +27,12 @@ function Payments_Client() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get('https://localhost:5000/api/create', {
+        const response = await axios.get('https://localhost:5000/api/my-transactions', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
-        setTransactions(response.data);
+        setTransactions(response.data.transactions); // Store transactions in state
       } catch (err) {
         console.error('Error fetching transactions:', err);
         alert('Failed to load transactions.');
@@ -48,9 +43,6 @@ function Payments_Client() {
   }, [token]);
 
   const handleSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
-    console.log('Handle Submit Called');
-    console.log('Submitting:', values);
-
     const payload = {
       fromAccountNumber: values.fromAccountNumber,
       toAccountNumber: values.toAccountNumber,
@@ -59,7 +51,6 @@ function Payments_Client() {
       swiftCode: values.swiftCode,
       paymentMethod: values.paymentMethod,
     };
-    console.log('Payload being sent to server:', payload);
 
     try {
       // Make the POST request to the payment API
@@ -69,11 +60,17 @@ function Payments_Client() {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Server response:', response.data);
-      alert('Payment successful.');
-      resetForm(); // Reset the form after successful submission
+
+      // Handle response after successful submission
+      if (response.status === 200) {
+        // You can show a success message or navigate to another page
+        alert('Payment successful.');
+        resetForm(); // Reset the form after successful submission
+
+        // Optional: Redirect to a confirmation or transactions page
+        navigate('/transactions'); // You can customize the path based on your app's flow
+      }
     } catch (err) {
-      console.error('Error submitting form:', err);
       if (err.response) {
         alert(err.response.data.message); // Show server error message
         setErrors({ serverError: err.response.data.message });
@@ -87,7 +84,6 @@ function Payments_Client() {
 
   const handleCancel = (resetForm) => {
     alert('Transaction canceled.');
-    console.log('cancel');
     resetForm(); // Reset the form on cancel
   };
 
@@ -196,12 +192,47 @@ function Payments_Client() {
                 </button>
 
                 <button className="back-button" onClick={() => navigate('/')}>
-                Back to Welcome
-              </button>
+                  Back to Welcome
+                </button>
               </div>
             </Form>
           )}
         </Formik>
+
+        {/* Transactions Table */}
+        <h2>Your Transactions</h2>
+        <table className="transactions-table">
+          <thead>
+            <tr>
+              <th>From Account</th>
+              <th>To Account</th>
+              <th>Amount</th>
+              <th>Currency</th>
+              <th>Payment Method</th>
+              <th>Swift Code</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.length > 0 ? (
+              transactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{transaction.fromAccountNumber}</td>
+                  <td>{transaction.toAccountNumber}</td>
+                  <td>{transaction.amount}</td>
+                  <td>{transaction.currency}</td>
+                  <td>{transaction.paymentMethod}</td>
+                  <td>{transaction.swiftCode}</td>
+                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">No transactions available.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -215,4 +246,3 @@ export default Payments_Client;
 // https://expressjs.com/en/guide/routing.html
 // Express Documentation
 // https://expressjs.com/
-
