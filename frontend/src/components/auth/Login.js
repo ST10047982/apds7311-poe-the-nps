@@ -11,16 +11,12 @@ import * as Yup from 'yup';
 // Dynamic validation schema using Yup
 const validationSchema = (userType) => Yup.object({
   username: Yup.string()
-    .matches(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers.')
     .required('Username is required'),
   accountNumber: userType === 'Client' 
     ? Yup.string()
-        .matches(/^\d+$/, 'Account Number must be numeric')
-        .required('Account Number is required')
+       .required('Account Number is required')
     : Yup.string(), // Not required for staff
   password: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, 'Password must contain at least one letter and one number.')
     .required('Password is required'),
 });
 

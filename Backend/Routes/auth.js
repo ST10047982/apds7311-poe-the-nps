@@ -9,25 +9,25 @@ import loginAttemptLogger from '../middleware/loginAttemptMiddleware.js';
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
-// Registration Route
+// Registration Route for Users
 router.post('/register', async (req, res) => {
     console.log('Register route hit');
     try {
         const { username, fullName, idNumber, accountNumber, password } = req.body;
 
-        // Define regex patterns
+        // Define robust regex patterns for input validation
         const usernameRegex = /^[a-zA-Z0-9_]{3,30}$/;
-        const fullNameRegex = /^[a-zA-Z\s]+$/;
+        const fullNameRegex = /^[a-zA-Z\s]{1,50}$/;
         const idNumberRegex = /^[0-9]{13}$/;
         const accountNumberRegex = /^[0-9]{10,12}$/;
-     
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
         // Validate the inputs with regex
         if (!usernameRegex.test(username)) {
             return res.status(400).json({ message: 'Invalid username. Must be 3-30 characters, alphanumeric, and can include underscores.' });
         }
         if (!fullNameRegex.test(fullName)) {
-            return res.status(400).json({ message: 'Invalid full name. Only letters and spaces are allowed.' });
+            return res.status(400).json({ message: 'Invalid full name. Only letters and spaces are allowed, and must be 1-50 characters.' });
         }
         if (!idNumberRegex.test(idNumber)) {
             return res.status(400).json({ message: 'Invalid ID number. Must be a 13-digit number.' });
@@ -35,7 +35,9 @@ router.post('/register', async (req, res) => {
         if (!accountNumberRegex.test(accountNumber)) {
             return res.status(400).json({ message: 'Invalid account number. Must be 10-12 digits.' });
         }
-    
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
+        }
 
         // Check if user already exists by account number
         const existingUser = await User.findOne({ accountNumber });
@@ -62,23 +64,18 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Registration Route 
+// Registration Route for Staff
 router.post('/register/staff', async (req, res) => {
     console.log('Register route hit');
     try {
         const { username, fullName, password } = req.body;
-
-        // Define regex patterns
-        const usernameRegex = /^[a-zA-Z0-9_]{3,30}$/;
-        const fullNameRegex = /^[a-zA-Z\s]+$/;
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
         // Validate inputs with regex
         if (!usernameRegex.test(username)) {
             return res.status(400).json({ message: 'Invalid username. Must be 3-30 characters, alphanumeric, and can include underscores.' });
         }
         if (!fullNameRegex.test(fullName)) {
-            return res.status(400).json({ message: 'Invalid full name. Only letters and spaces are allowed.' });
+            return res.status(400).json({ message: 'Invalid full name. Only letters and spaces are allowed, and must be 1-50 characters.' });
         }
         if (!passwordRegex.test(password)) {
             return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
@@ -107,32 +104,19 @@ router.post('/register/staff', async (req, res) => {
     }
 });
 
-// Login Route
+// Login Route for Users
 router.post('/login/user', bruteForce.prevent, loginAttemptLogger, async (req, res) => {
     try {
         const { username, accountNumber, password } = req.body;
 
-        console.log('Login attempt:', req.body); // Log the incoming request body
-
         // Find the user by account number
         const user = await User.findOne({ accountNumber });
-        if (!user) {
-            console.log('User not found');
-            return res.status(404).json({ message: 'User Account Not Found' });
-        }
-
-        console.log('User found:', user); // Log the user retrieved from the database
-
-        // Ensure the username matches
-        if (user.username !== username) {
-            return res.status(400).json({ message: 'Invalid Username or Account Number' });
+        if (!user || user.username !== username) {
+            return res.status(404).json({ message: 'Invalid Username or Account Number' });
         }
 
         // Compare provided password with stored hashed password
         const isMatch = await bcrypt.compare(password, user.password);
-
-        console.log('Password comparison:', { providedPassword: password, storedPasswordHash: user.password });
-    
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid Credentials' });
         }
@@ -140,47 +124,34 @@ router.post('/login/user', bruteForce.prevent, loginAttemptLogger, async (req, r
         // Create a JWT token
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Login successful
         res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
         res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 });
 
-// Login Route
+// Login Route for Staff
 router.post('/login/staff', bruteForce.prevent, loginAttemptLogger, async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        console.log('Login attempt:', req.body); // Log the incoming request body
-
-        // Find the user by username
+        // Find the staff member by username
         const existingStaff = await Staff.findOne({ username });
-
         if (!existingStaff) {
-            console.log('User not found');
             return res.status(404).json({ message: 'User Account Not Found' });
         }
 
-        console.log('User found:', existingStaff); // Log the user retrieved from the database
-
         // Compare provided password with stored hashed password
         const isMatch = await bcrypt.compare(password, existingStaff.password);
-
-        console.log('Password comparison:', { providedPassword: password, storedPasswordHash: existingStaff.password });
-
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid Credentials' });
         }
 
-
         // Create a JWT token
         const token = jwt.sign({ id: existingStaff._id }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Login successful
         res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
-        console.error(err); // Log the error for debugging
         res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 });
@@ -191,6 +162,7 @@ router.post('/logout', async (req, res) => {
 });
 
 export default router;
+
 
 // This method was adapted from various discussions and tutorials on setting up authentication routes with Express
 // https://dev.to/aritik/setting-up-auth-routes-with-express-57oi

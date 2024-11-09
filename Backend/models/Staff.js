@@ -7,21 +7,22 @@ const StaffSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        match: /^[a-zA-Z0-9_]{3,30}$/, // Allows alphanumeric and underscores, 3-30 characters
+        match: /^[a-zA-Z0-9_]{3,30}$/, // Allows only alphanumeric characters and underscores, length 3-30
     },
     fullName: {
         type: String,
         required: true,
         trim: true,
-        match: /^[a-zA-Z\s]+$/, // Allows letters and spaces only
+        match: /^[a-zA-Z\s]{2,50}$/, // Allows letters and spaces only, length 2-50
     },
     password: {
         type: String,
-        required: true
-       // match: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{256,}$/, // Minimum 8 characters, at least one letter and one number
-
+        required: true,
+        // Stronger password regex (8 characters minimum, including at least one uppercase letter, one number, and one special character)
+        match: /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
     },
 });
+
 // Export the Staff model
 export default mongoose.model('Staff', StaffSchema);
 

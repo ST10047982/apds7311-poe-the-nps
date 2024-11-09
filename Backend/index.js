@@ -19,8 +19,10 @@ connectDB();
 app.use(helmet()); // Security headers
 app.use(express.json()); // Parse JSON bodies
 app.use(morgan('combined')); // Log HTTP requests
-app.use(cors()); // Enable CORS (Cross-Origin Resource Sharing)
+app.use(cors({
+    origin: 'http://localhost:3000', 
 
+}));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', transactionRoutes);
@@ -30,6 +32,7 @@ const options = {
     key: fs.readFileSync('Keys/server.key'),
     cert: fs.readFileSync('Keys/server.cert')
 };
+
 
 // HTTPS Server
 https.createServer(options, app).listen(PORT, () => {
