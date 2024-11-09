@@ -88,8 +88,8 @@ router.post('/create', authMiddleware, async (req, res) => {
         console.log("From Account Number:", fromAccountNumber);
 console.log("To Account Number:", toAccountNumber);
 
-        const fromUser = await User.findOne({ accountNumber: fromAccountNumber.trim() }).lean();
-        const toUser = await User.findOne({ accountNumber: toAccountNumber.trim() }).lean();
+        const fromUser = await User.findOne({ accountNumber: fromAccountNumber.toString().trim() }).lean();
+        const toUser = await User.findOne({ accountNumber: toAccountNumber.toString().trim() }).lean();
 
         if (!fromUser || !toUser) {
             return res.status(404).json({
