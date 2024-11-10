@@ -181,7 +181,7 @@ router.get('/my-transactions', authMiddleware, async (req, res) => {
         console.log('User information from token:', req.user);
 
         // Retrieve and log the account number for the logged-in user
-        const accountNumber = req.user.id;
+        const accountNumber = req.user.userId;
         console.log('Logged-in user account number:', accountNumber);
 
         // Log that the transaction query is about to execute

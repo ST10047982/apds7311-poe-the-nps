@@ -19,7 +19,6 @@ const StaffSchema = new mongoose.Schema({
         type: String,
         required: true,
         // Stronger password regex (8 characters minimum, including at least one uppercase letter, one number, and one special character)
-        match: /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
     },
     role: {
         type: String,
