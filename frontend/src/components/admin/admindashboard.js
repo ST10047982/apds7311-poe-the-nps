@@ -160,3 +160,6 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+
+// the code above was taken and apadted from React Documentation.
+// https://reactjs.org/docs/getting-started.html

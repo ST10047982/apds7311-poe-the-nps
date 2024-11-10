@@ -168,3 +168,6 @@ function ForgetPassword() {
 }
 
 export default ForgetPassword;
+
+// the code was taken and apadted from React and Hooks
+// https://reactjs.org/docs/hooks-state.html
