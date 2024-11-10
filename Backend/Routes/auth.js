@@ -40,13 +40,11 @@ router.post('/register', async (req, res) => {
         }
 
         // Check if user already exists by account number
-        const existingUser = await User.findOne({ accountNumber, idNumber });
+        const existingUser = await User.findOne({ accountNumber});
         if (existingUser) {
             return res.status(400).json({ message: 'User with this account number already exists' });
         }
-        else {
-            return res.status(400).json({ message: 'User with this ID already exists' });
-        }
+       
    
         // Hash Password
         const hashedPassword = await bcrypt.hash(password, 10);
