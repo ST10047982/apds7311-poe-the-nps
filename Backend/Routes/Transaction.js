@@ -215,4 +215,16 @@ router.get('/my-transactions', authMiddleware, async (req, res) => {
 });
 
 
+// Logout Route
+router.post('/logout', (req, res) => {
+    try {
+        // This response tells the client that the logout action was successful
+        res.status(200).json({
+            message: 'Logout successful.',
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to process logout', error: error.message });
+    }
+});
+
 export default router;

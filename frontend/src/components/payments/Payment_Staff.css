@@ -116,6 +116,15 @@
   background-color: #4aa9f79f; /* Highlight row on hover */
 }
 
+
+button.logout {
+  background-color: #007bff;
+  color: rgb(0, 0, 0);
+}
+
+button.logout:hover {
+  background-color: #0056b3;
+}
   
   /* This CSS was adapted from various tutorials on web design and styling best practices */
 /*
