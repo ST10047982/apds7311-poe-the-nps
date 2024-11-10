@@ -16,10 +16,10 @@ router.post('/register', async (req, res) => {
         const { username, fullName, idNumber, accountNumber, password } = req.body;
 
         // Define robust regex patterns for input validation
-        const usernameRegex = /^[a-zA-Z0-9_]{3,30}$/;
+        const usernameRegex = /^\w{3,30}$/;
         const fullNameRegex = /^[a-zA-Z\s]{1,50}$/;
-        const idNumberRegex = /^[0-9]{13}$/;
-        const accountNumberRegex = /^[0-9]{10,12}$/;
+        const idNumberRegex = /^\d{13}$/;
+        const accountNumberRegex = /^\d{10,12}$/;
         const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
         // Validate the inputs with regex
