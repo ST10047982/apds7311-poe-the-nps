@@ -21,6 +21,12 @@ const StaffSchema = new mongoose.Schema({
         // Stronger password regex (8 characters minimum, including at least one uppercase letter, one number, and one special character)
         match: /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
     },
+    role: {
+        type: String,
+        required: true,
+        enum: ['admin', 'staff'], // Role can either be 'admin' or 'staff'
+        default: 'staff',
+    },
 });
 
 // Export the Staff model

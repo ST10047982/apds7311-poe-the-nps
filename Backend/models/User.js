@@ -32,6 +32,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
    },
+   status: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
+   }
 });
 // Export the User model
 export default mongoose.model('User', UserSchema, 'users');
