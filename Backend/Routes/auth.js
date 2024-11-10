@@ -40,11 +40,14 @@ router.post('/register', async (req, res) => {
         }
 
         // Check if user already exists by account number
-        const existingUser = await User.findOne({ accountNumber });
+        const existingUser = await User.findOne({ accountNumber, idNumber });
         if (existingUser) {
             return res.status(400).json({ message: 'User with this account number already exists' });
         }
-
+        else {
+            return res.status(400).json({ message: 'User with this ID already exists' });
+        }
+   
         // Hash Password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -65,9 +68,10 @@ router.post('/register', async (req, res) => {
         res.status(201).json({ message: 'Registration successful. Your account is waiting for admin approval.' });
 
     } catch (err) {
-        res.status(500).json({ message: 'Internal Server Error', error: err.message });
+        res.status(500).json({ message: 'Internal Server Error' + error, error: err.message });
     }
 });
+
 
 // Registration Route - Staff
 router.post('/register/staff', async (req, res) => {
@@ -165,8 +169,12 @@ router.post('/register/admin', async (req, res) => {
 });
 
 // Update Password - Staff
-router.post('/staff/update-password', async (req, res) => {
+router.post('/staff/forget-password', async (req, res) => {
     const { username, newPassword } = req.body;
+
+    if (!username || !newPassword) {
+        return res.status(400).json({ message: 'staff and new password are required.' });
+    }
 
     try {
         // Find the staff member by username
@@ -175,15 +183,15 @@ router.post('/staff/update-password', async (req, res) => {
             return res.status(404).json({ message: 'Staff member not found.' });
         }
 
-        // Validate the new password using the schema's regex pattern
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+         // Validate the new password using regex (at least 8 characters, one letter, one number)
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         if (!passwordRegex.test(newPassword)) {
-            return res.status(400).json({ message: 'Invalid password. Must include at least one uppercase letter, one number, and one special character, with a minimum length of 8 characters.' });
+            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
         }
-
-        // Hash the new password
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
-
+ 
+         // Hash the new password
+         const hashedPassword = await bcrypt.hash(newPassword, 10);
+ 
         // Update the password in the database
         staff.password = hashedPassword;
         await staff.save();
@@ -194,10 +202,48 @@ router.post('/staff/update-password', async (req, res) => {
     }
 });
 
-
-// Update Password - Client
-router.post('/user/update-password', async (req, res) => {
+// Update Password - Admin
+router.post('/admin/forget-password', async (req, res) => {
     const { username, newPassword } = req.body;
+
+    if (!username || !newPassword) {
+        return res.status(400).json({ message: 'Username and new password are required.' });
+    }
+
+    try {
+        // Find the admin member by username
+        const admin = await Staff.findOne({ username });
+        if (!admin) {
+            return res.status(404).json({ message: 'Admin member not found.' });
+        }
+
+        // Validate the new password using regex (at least 8 characters, one letter, one number)
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (!passwordRegex.test(newPassword)) {
+            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the password in the database
+        admin.password = hashedPassword;
+        await admin.save();
+
+        res.status(200).json({ message: 'Password updated successfully.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Internal Server Error', error: err.message });
+    }
+});
+
+
+// Update Password - User
+router.post('/user/forget-password', async (req, res) => {
+    const { username, newPassword } = req.body;
+
+    if (!username || !newPassword) {
+        return res.status(400).json({ message: 'Username and new password are required.' });
+    }
 
     try {
         // Find the staff member by username
@@ -206,18 +252,18 @@ router.post('/user/update-password', async (req, res) => {
             return res.status(404).json({ message: 'User member not found.' });
         }
 
-        // Validate the new password using the schema's regex pattern
-        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        // Validate the new password using regex (at least 8 characters, one letter, one number)
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         if (!passwordRegex.test(newPassword)) {
-            return res.status(400).json({ message: 'Invalid password. Must include at least one uppercase letter, one number, and one special character, with a minimum length of 8 characters.' });
+            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
         }
 
         // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         // Update the password in the database
-        staff.password = hashedPassword;
-        await staff.save();
+        user.password = hashedPassword;
+        await user.save();
 
         res.status(200).json({ message: 'Password updated successfully.' });
     } catch (err) {

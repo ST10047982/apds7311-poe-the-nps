@@ -87,29 +87,17 @@ label {
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  background-color: #007bff; /* Set background color for both */
+  color: #000000; /* Set text color for both */
 }
 
-/* Specific styles for the login button */
-.login-button {
-  background-color: #007bff;
-  color: #000000;
-}
-
-/* Hover effect for the login button */
-.login-button:hover {
-  background-color: #0056b3;
-}
-
-/* Specific styles for the back button */
-.back-button {
-  background-color: #6c757d;
-  color: #fff;
-}
-
-/* Hover effect for the back button */
+/* Hover effect for both buttons */
+.login-button:hover,
 .back-button:hover {
-  background-color: #5a6268;
+  background-color: #0056b3; /* Set hover color for both */
 }
+
+
 
 /* This CSS was adapted from various tutorials on web design and styling best practices */
 /*
