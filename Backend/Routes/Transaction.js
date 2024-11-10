@@ -91,10 +91,18 @@ console.log("To Account Number:", toAccountNumber);
         const fromUser = await User.findOne({ accountNumber: fromAccountNumber.toString().trim() }).lean();
         const toUser = await User.findOne({ accountNumber: toAccountNumber.toString().trim() }).lean();
 
-        if (!fromUser || !toUser) {
-            return res.status(404).json({
-                message: fromUser ? 'To account number not found' : toUser ? 'From account number not found' : 'Both account numbers not found'
-            });
+        let errorMessage;
+
+        if (!fromUser && !toUser) {
+            errorMessage = 'Both account numbers not found';
+        } else if (!fromUser) {
+            errorMessage = 'From account number not found';
+        } else if (!toUser) {
+            errorMessage = 'To account number not found';
+        }
+
+        if (errorMessage) {
+            return res.status(404).json({ message: errorMessage });
         }
 
         const transaction = new Transaction({
