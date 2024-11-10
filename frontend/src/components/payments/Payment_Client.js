@@ -196,8 +196,8 @@ function Payments_Client() {
                   Cancel Payment
                 </button>
 
-                <button className="back-button" onClick={() => navigate('/')}>
-                  Back to Welcome
+                <button className="button logout" onClick={() => navigate('/')}>
+                  Logout
                 </button>
               </div>
             </Form>

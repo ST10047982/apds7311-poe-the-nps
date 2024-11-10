@@ -20,11 +20,13 @@ const TransactionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
+        match: /^[0-9]{10,12}$/, 
     },
     toAccount: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
+        match: /^[0-9]{10,12}$/, 
     },
     amount: {
         type: Number,

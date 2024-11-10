@@ -168,8 +168,8 @@ function Payments_Staff() {
           <button className="save-button" onClick={handleSave} disabled={!selectedTransaction} style={{ backgroundColor: 'blue', color: 'white' }}>
             Submitted to SWIFT
           </button>
-          <button className="back-button" onClick={() => navigate('/')}>
-            Back to Welcome
+          <button className="button logout" onClick={() => navigate('/')}>
+            Logout
           </button>
         </div>
       </div>

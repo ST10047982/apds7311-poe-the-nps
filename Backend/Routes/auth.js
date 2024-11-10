@@ -128,8 +128,9 @@ router.post('/register/admin', async (req, res) => {
         const { username, fullName, password } = req.body;
 
         // Define regex patterns
-        const usernameRegex = /^[a-zA-Z0-9_]{3,30}$/;
-        const fullNameRegex = /^[a-zA-Z\s]+$/;
+        const usernameRegex = /^\w{3,30}$/;
+        const fullNameRegex = /^[a-zA-Z\s]{1,50}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 
         // Validate the inputs with regex
         if (!usernameRegex.test(username)) {
@@ -137,6 +138,10 @@ router.post('/register/admin', async (req, res) => {
         }
         if (!fullNameRegex.test(fullName)) {
             return res.status(400).json({ message: 'Invalid full name. Only letters and spaces are allowed.' });
+        }
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
         }
 
         // Check if admin already exists by username (or you can use another field like `email` if applicable)
