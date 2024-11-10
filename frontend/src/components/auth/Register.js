@@ -29,6 +29,7 @@ function Register() {
 
   const handleRegisterClick = async (values, { setSubmitting, setErrors }) => {
     try {
+      // Make the POST request to the registration API
       await axios.post('https://localhost:5000/api/auth/register', {
         username: values.username,
         fullName: values.fullName,
@@ -37,19 +38,23 @@ function Register() {
         password: values.password,
       });
 
-      alert('Registration successful.');
+      // Show a success alert
+      alert('Registration successful. Your account is waiting for admin approval.');
+
+      // Redirect to login page after successful registration
       navigate('/login');
     } catch (err) {
       console.error('Registration error:', err);
       if (err.response) {
         setErrors({ serverError: err.response.data.message });
       } else {
-        setErrors({ serverError: 'Something went wrong. Please try again.' + err });
+        setErrors({ serverError: 'Something went wrong. Please try again.' });
       }
     } finally {
       setSubmitting(false);
     }
   };
+
 
   return (
     <div className="register-container">

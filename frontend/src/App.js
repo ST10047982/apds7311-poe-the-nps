@@ -5,6 +5,8 @@ import Login from './components/auth/Login'; // Import the Login component
 import Payments from './components/payments/Payment_Client'; // Import the Payment component
 import Payment from './components/payments/Payment_Staff'; // Import the Payment component
 import Register from './components/auth/Register'; // Import the Register component
+import Admin from './components/admin/admindashboard'; // Import the Admin component
+
 import './App.css'; // Import the main CSS file for styling
 
 // For more information, visit: https://reactrouter.com/en/main/start/overview
@@ -20,6 +22,7 @@ function App() {
           <Route path="/register" element={<Register />} /> {/* Route for the Register component */}
           <Route path="/payments" element={<Payments />} /> {/* Route for the Payments_Client component */}
           <Route path="/payment" element={<Payment />} /> {/* Route for the Payments_Staff component */}
+          <Route path="/admin" element={<Admin />} /> {/* Route for the Amdin component */}
         </Routes>
       </div>
     </Router>

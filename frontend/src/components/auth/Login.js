@@ -1,90 +1,94 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css'; // Ensure you update your CSS to match the styles below
+import './Login.css';
 import axios from 'axios';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-// For more information, visit: https://reactrouter.com/en/main/start/overview
-// Additional reference: https://ui.dev/react-router-tutorial
-
 // Dynamic validation schema using Yup
 const validationSchema = (userType) => Yup.object({
-  username: Yup.string()
-    .required('Username is required'),
+  username: Yup.string().required('Username is required'),
   accountNumber: userType === 'Client' 
-    ? Yup.string()
-       .required('Account Number is required')
-    : Yup.string(), // Not required for staff
-  password: Yup.string()
-    .required('Password is required'),
+    ? Yup.string().required('Account Number is required')
+    : Yup.string(),
+  password: Yup.string().required('Password is required'),
 });
 
 function Login() {
-  const navigate = useNavigate(); // Hook for navigating
-  const [userType, setUserType] = useState('Client'); // State for user type
+  const navigate = useNavigate();
+  const [userType, setUserType] = useState('Client');
 
   const handleBackClick = () => {
-    navigate('/'); // Navigate back to the Welcome page
+    navigate('/');
   };
 
-  const handleLoginClick = async (values, { setSubmitting, setErrors }) => {
-   console.log("Login attempt with values:", values); // Log login values
+  const handleForgotPasswordClick = () => {
+    navigate('/forget-password');
+  };
+
+  const handleLoginClick = async (values, { setSubmitting, setErrors, resetForm }) => {
+    console.log("Login attempt with values:", values);
 
     try {
-      // Dynamically set the API path based on the userType
-      const apiPath = userType === 'Client' 
-        ? 'https://localhost:5000/api/auth/login/user' 
-        : 'https://localhost:5000/api/auth/login/staff';
+      let apiPath;
+      if (userType === 'Client') {
+        apiPath = 'https://localhost:5000/api/auth/login/user';
+      } else if (userType === 'Staff') {
+        apiPath = 'https://localhost:5000/api/auth/login/staff';
+      } else if (userType === 'Admin') {
+        apiPath = 'https://localhost:5000/api/auth/login/admin';
+      }
 
-      console.log("API Path:", apiPath); // Log API path
-
-      // Make the POST request to the appropriate path
       const response = await axios.post(apiPath, {
         username: values.username,
-        password: values.password, // Ensure password is included
-        accountNumber: userType === 'Client' ? values.accountNumber : undefined, // Only send accountNumber for "Client"
+        password: values.password,
+        accountNumber: userType === 'Client' ? values.accountNumber : undefined,
       });
 
-
-      console.log("Response data:", response.data); // Log response data
-
-      // Store the token in local storage
+      console.log("Response data:", response.data);
 
       localStorage.setItem('token', response.data.token);
 
-      // Navigate to the correct payments page based on user type
+      // Redirect based on userType
       if (userType === 'Client') {
-        navigate('/payments'); // Navigate to Payments_Clients for "Client"
-      } else {
-        navigate('/payment'); // Navigate to Payments_Staff for "Staff"
+        navigate('/payments');
+      } else if (userType === 'Staff') {
+        navigate('/payment');
+      } else if (userType === 'Admin') {
+        navigate('/admin');
       }
-    } catch (err) {
 
-      console.error("Login error:", err); // Log the error
+      // Clear the form fields after successful login
+      resetForm();
+      
+    } catch (err) {
+      console.error("Login error:", err);
 
       if (err.response) {
-        // Display specific error message from server
-        setErrors({ serverError: err.response.data.message || 'Invalid login details.' });
+        if (err.response.status === 403) {
+          setErrors({ serverError: 'Your account is not approved by the admin yet.' });
+        } else {
+          setErrors({ serverError: err.response.data.message || 'Invalid login details.' });
+        }
       } else {
         setErrors({ serverError: 'Something went wrong. Please try again.' });
       }
     } finally {
-      setSubmitting(false); // Stop the form submission state
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="container"> {/* Container for the login form */}
+    <div className="container">
       <div className="login-container">
         <div className="login-box">
           <h1 className="login-title">Login</h1>
           <p className="login-description">Please enter your login details below.</p>
 
           <Formik
-            initialValues={{ username: '', accountNumber: '', password: '' }} // Initial form values
-            validationSchema={validationSchema(userType)} // Validation schema based on user type
-            onSubmit={handleLoginClick} // Form submission handler
+            initialValues={{ username: '', accountNumber: '', password: '' }}
+            validationSchema={validationSchema(userType)}
+            onSubmit={handleLoginClick}
           >
             {({ isSubmitting, errors }) => (
               <Form>
@@ -95,11 +99,12 @@ function Login() {
                     id="userType"
                     name="userType"
                     className="input-field"
-                    onChange={(e) => setUserType(e.target.value)} // Update user type
+                    onChange={(e) => setUserType(e.target.value)}
                     value={userType}
                   >
                     <option value="Client">Client</option>
                     <option value="Staff">Staff</option>
+                    <option value="Admin">Admin</option>
                   </Field>
                 </div>
 
@@ -141,6 +146,14 @@ function Login() {
                   <ErrorMessage name="password" component="div" className="error-message" />
                 </div>
 
+                <button
+                  type="button"
+                  className="forgot-password-button"
+                  onClick={handleForgotPasswordClick}
+                >
+                  Forgot Password?
+                </button>
+
                 {errors.serverError && <p className="error-message server-error">{errors.serverError}</p>}
 
                 <div className="button-group">
@@ -161,9 +174,3 @@ function Login() {
 }
 
 export default Login;
-
-/* This code was adapted from various tutorials on React, Formik, and Yup for form handling and validation */
-// This method was adapted from the Express documentation on routing and various tutorials on transaction management
-// https://expressjs.com/en/guide/routing.html
-// Express Documentation
-// https://expressjs.com/
