@@ -5,34 +5,30 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import './Register.css'; // Import your CSS file for styling
 
-// For more information, visit: https://reactrouter.com/en/main/start/overview
-// Additional reference: https://ui.dev/react-router-tutorial
-
-// Validation schema using Yup
+// Validation schema using Yup with updated regex patterns
 const validationSchema = Yup.object({
   username: Yup.string()
-    .matches(/^[a-zA-Z0-9]+$/, 'Username can only contain letters and numbers.')
+    .matches(/^[a-zA-Z0-9_]{3,30}$/, 'Username must be 3-30 characters, alphanumeric, and can include underscores.')
     .required('Username is required'),
   fullName: Yup.string()
+    .matches(/^[a-zA-Z\s]{1,50}$/, 'Full name can only contain letters and spaces and must be 1-50 characters.')
     .required('Full Name is required'),
   accountNumber: Yup.string()
-    .matches(/^\d+$/, 'Account Number must be numeric')
+    .matches(/^[0-9]{10,12}$/, 'Account Number must be 10-12 digits')
     .required('Account Number is required'),
   idNumber: Yup.string()
-    .matches(/^\d+$/, 'ID Number must be numeric')
+    .matches(/^[0-9]{13}$/, 'ID Number must be a 13-digit number')
     .required('ID Number is required'),
   password: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, 'Password must contain at least one letter and one number.')
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, 'Password must be at least 8 characters, with at least one letter and one number.')
     .required('Password is required'),
 });
 
 function Register() {
-  const navigate = useNavigate(); // Hook for navigating
+  const navigate = useNavigate();
 
   const handleRegisterClick = async (values, { setSubmitting, setErrors }) => {
     try {
-      // Make the POST request to the registration API
       await axios.post('https://localhost:5000/api/auth/register', {
         username: values.username,
         fullName: values.fullName,
@@ -41,20 +37,17 @@ function Register() {
         password: values.password,
       });
 
-      // Show a success alert
       alert('Registration successful.');
-
-      // Redirect to login page after successful registration
       navigate('/login');
     } catch (err) {
-      console.error('Registration error:', err); // Log the error for debugging
+      console.error('Registration error:', err);
       if (err.response) {
-        setErrors({ serverError: err.response.data.message }); // Set server error message
+        setErrors({ serverError: err.response.data.message });
       } else {
-        setErrors({ serverError: 'Something went wrong. Please try again.' + err }); // Set generic error message
+        setErrors({ serverError: 'Something went wrong. Please try again.' + err });
       }
     } finally {
-      setSubmitting(false); // Stop the form submission state
+      setSubmitting(false);
     }
   };
 
@@ -65,9 +58,9 @@ function Register() {
         <p className="register-description">Please fill in your details below.</p>
 
         <Formik
-          initialValues={{ username: '', fullName: '', accountNumber: '', idNumber: '', password: '' }} // Initial form values
-          validationSchema={validationSchema} // Validation schema for form fields
-          onSubmit={handleRegisterClick} // Form submission handler
+          initialValues={{ username: '', fullName: '', accountNumber: '', idNumber: '', password: '' }}
+          validationSchema={validationSchema}
+          onSubmit={handleRegisterClick}
         >
           {({ isSubmitting, errors }) => (
             <Form>
@@ -150,6 +143,7 @@ function Register() {
 }
 
 export default Register;
+
 
 /* This code was adapted from various tutorials on React, Formik, and Yup for form handling and validation */
 // This method was adapted from the Express documentation on routing and various tutorials on transaction management

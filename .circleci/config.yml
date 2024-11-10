@@ -1,8 +1,8 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:node:frontend,package_manager:yarn:
 version: 2.1
+
 orbs:
-  node: circleci/node@5
+  node: circleci/node@5  # Use CircleCI's Node.js orb for easier configuration
+
 jobs:
   test-node:
     # Install node dependencies and run tests
@@ -13,9 +13,11 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
+      # Optionally uncomment and run tests if you have tests
       # - run:
       #     name: Run tests
       #     command: npm test --passWithNoTests
+
   build-node:
     # Build node project
     executor: node/default
@@ -26,26 +28,44 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Run build
           command: npm run build
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
+      # Copy build output to artifacts directory
       - run:
           name: Copy artifacts
           command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
       - store_artifacts:
           path: ~/artifacts
           destination: node-build
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
+
+  sonar-scan:
+    # Run SonarQube scan
+    executor: node/default
+    working_directory: ~/project/frontend
     steps:
-      # Replace this with steps to deploy to users
+      - checkout:
+          path: ~/project
+      - node/install-packages:
+          pkg-manager: npm
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Install SonarQube Scanner
+          command: |
+            npm install -g sonar-scanner
+      - run:
+          name: Run SonarQube scan
+          command: |
+            sonar-scanner \
+              -Dsonar.projectKey=your_project_key \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.login=$SONAR_TOKEN
+      - run:
+          name: Wait for SonarQube analysis to complete
+          command: sleep 30  # Adjust wait time if necessary
+
 workflows:
   build-and-test:
     jobs:
@@ -53,6 +73,6 @@ workflows:
       - build-node:
           requires:
             - test-node
-    # - deploy:
-    #     requires:
-    #       - build-node
+      - sonar-scan:
+          requires:
+            - build-node
