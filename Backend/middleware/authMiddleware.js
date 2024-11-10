@@ -6,7 +6,7 @@ const { TokenExpiredError, JsonWebTokenError } = jwt;
 const authMiddleware = (req, res, next) => {
     // Log request headers for debugging purposes
     console.log('Request Headers:', req.headers);
-
+ 
     // Extract the Authorization header from the request
     const authHeader = req.header('Authorization');
     console.log('Authorization Header:', authHeader);

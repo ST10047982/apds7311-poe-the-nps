@@ -17,7 +17,6 @@ const validationSchema = Yup.object({
     .required('Payment method is required'),
   swiftCode: Yup.string().required('Swift code is required'),
 });
-
 function Payments_Client() {
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]); // State to store fetched transactions
@@ -34,8 +33,7 @@ function Payments_Client() {
         });
         setTransactions(response.data.transactions); // Store transactions in state
       } catch (err) {
-        console.error('Error fetching transactions:', err);
-        alert('Failed to load transactions.');
+        alert('No transactions found.');
       }
     };
 
@@ -62,13 +60,20 @@ function Payments_Client() {
       });
 
       // Handle response after successful submission
-      if (response.status === 200) {
-        // You can show a success message or navigate to another page
+      if (response.status === 201) {
         alert('Payment successful.');
-        resetForm(); // Reset the form after successful submission
 
-        // Optional: Redirect to a confirmation or transactions page
-        navigate('/transactions'); // You can customize the path based on your app's flow
+        // After payment, fetch the updated transactions
+        const updatedTransactions = await axios.get('https://localhost:5000/api/my-transactions', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        // Update the state with the new transactions
+        setTransactions(updatedTransactions.data.transactions);
+
+        resetForm(); // Reset the form after successful submission
       }
     } catch (err) {
       if (err.response) {
@@ -200,39 +205,41 @@ function Payments_Client() {
         </Formik>
 
         {/* Transactions Table */}
-        <h2>Your Transactions</h2>
-        <table className="transactions-table">
-          <thead>
-            <tr>
-              <th>From Account</th>
-              <th>To Account</th>
-              <th>Amount</th>
-              <th>Currency</th>
-              <th>Payment Method</th>
-              <th>Swift Code</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.length > 0 ? (
-              transactions.map((transaction, index) => (
-                <tr key={index}>
-                  <td>{transaction.fromAccountNumber}</td>
-                  <td>{transaction.toAccountNumber}</td>
-                  <td>{transaction.amount}</td>
-                  <td>{transaction.currency}</td>
-                  <td>{transaction.paymentMethod}</td>
-                  <td>{transaction.swiftCode}</td>
-                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7">No transactions available.</td>
+        <div className="transactions-container">
+      <h2>Your Transactions</h2>
+      <table className="transactions-table">
+        <thead>
+          <tr>
+            <th>From Account</th>
+            <th>To Account</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Payment Method</th>
+            <th>Swift Code</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.length > 0 ? (
+            transactions.map((transaction, index) => (
+              <tr key={index}>
+               <td>{transaction.fromAccount?.accountNumber}</td>
+               <td>{transaction.toAccount?.accountNumber}</td>
+                <td>{transaction.amount}</td>
+                <td>{transaction.currency}</td>
+                <td>{transaction.paymentMethod}</td>
+                <td>{transaction.swiftCode}</td>
+                <td>{transaction.status}</td>
               </tr>
-            )}
-          </tbody>
-        </table>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7">No transactions available.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
       </div>
     </div>
   );

@@ -67,7 +67,7 @@ const transactionSchema = Joi.object({
 // Route to get all pending transactions (for employees)
 router.get('/get', authMiddleware, async (req, res) => {
     try {
-        const transactions = await Transaction.find({ status: 'pending' });
+        const transactions = await Transaction.find({ status: 'Pending' });
         res.status(200).json({ transactions });
     } catch (err) {
         console.error('Error fetching transactions:', err.message);
@@ -86,7 +86,7 @@ router.post('/create', authMiddleware, async (req, res) => {
     try {
 
         console.log("From Account Number:", fromAccountNumber);
-console.log("To Account Number:", toAccountNumber);
+        console.log("To Account Number:", toAccountNumber);
 
         const fromUser = await User.findOne({ accountNumber: fromAccountNumber.toString().trim() }).lean();
         const toUser = await User.findOne({ accountNumber: toAccountNumber.toString().trim() }).lean();
@@ -175,19 +175,44 @@ router.post('/submit/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// Route to get transactions of the logged-in user
 router.get('/my-transactions', authMiddleware, async (req, res) => {
     try {
+        // Log user details from the token
+        console.log('User information from token:', req.user);
+
+        // Retrieve and log the account number for the logged-in user
+        const accountNumber = req.user.id;
+        console.log('Logged-in user account number:', accountNumber);
+
+        // Log that the transaction query is about to execute
+        console.log('Querying transactions for account number:', accountNumber);
+
         const transactions = await Transaction.find({
-            $or: [{ fromAccount: req.user.id }, { toAccount: req.user.id }]
-        }).populate('fromAccount toAccount', 'accountNumber name');
+            $or: [
+                { fromAccount: accountNumber },
+                { toAccount: accountNumber }
+            ]
+        })
+        .populate('fromAccount', 'accountNumber fullName')  // Populate fromAccount details
+        .populate('toAccount', 'accountNumber fullName');    // Populate toAccount details
 
-        if (!transactions.length) return res.status(404).json({ message: 'No transactions found' });
+        // Log the transactions returned from the database query
+        console.log('Transactions found:', transactions);
 
+        if (!transactions || transactions.length === 0) {
+            console.log('No transactions found for account number:', accountNumber);
+            return res.status(404).json({ message: 'No transactions found' });
+        }
+
+        // Log successful response before sending data
+        console.log('Returning transactions for account number:', accountNumber);
         res.status(200).json({ transactions });
     } catch (err) {
+        // Log the error in case of an exception
+        console.error('Error fetching transactions:', err);
         res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 });
+
 
 export default router;

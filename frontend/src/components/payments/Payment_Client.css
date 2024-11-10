@@ -69,6 +69,54 @@ button:hover {
   text-align: left;
 }
 
+.transactions-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.transactions-table th,
+.transactions-table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.transactions-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.transactions-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.transactions-table tr:hover {
+  background-color: #e6f7ff;
+}
+
+.transactions-table th,
+.transactions-table td {
+  font-size: 14px;
+  color: #333;
+}
+
+.transactions-table td {
+  text-align: center;
+}
+
+.transactions-container h2 {
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+}
+
 /* This CSS was adapted from various tutorials on web design and styling best practices */
 /*
 // This method was adapted from the Express documentation on routing and various tutorials on transaction management
