@@ -13,11 +13,7 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
-      # Optionally uncomment and run tests if you have tests
-      # - run:
-      #     name: Run tests
-      #     command: npm test --passWithNoTests
-
+          
   build-node:
     # Build node project
     executor: node/default
@@ -50,17 +46,17 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
-     - run:
-        name: Install SonarQube Scanner globally
-        command: npm install -g sonar-scanner
-    - run:
-        name: Run SonarQube scan using the globally installed version
-        command: |
-          sonar-scanner \
-            -Dsonar.projectKey=your_project_key \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
+      - run:
+          name: Install SonarQube Scanner globally
+          command: npm install -g sonar-scanner
+      - run:
+          name: Run SonarQube scan using the globally installed version
+          command: |
+            sonar-scanner \
+              -Dsonar.projectKey=your_project_key \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.login=$SONAR_TOKEN
       - run:
           name: Wait for SonarQube analysis to complete
           command: sleep 30  # Adjust wait time if necessary
