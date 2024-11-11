@@ -51,15 +51,12 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: Make sonar-scanner executable
-          command: chmod +x ./node_modules/sonar-scanner/bin/sonar-scanner
-      - run:
-          name: Install SonarQube Scanner locally
-          command: npm install --save-dev sonar-scanner
+          name: Install SonarQube Scanner globally
+          command: npm install -g sonar-scanner
       - run:
           name: Run SonarQube scan
           command: |
-            ./node_modules/.bin/sonar-scanner \
+            sonar-scanner \
               -Dsonar.projectKey=your_project_key \
               -Dsonar.sources=. \
               -Dsonar.host.url=$SONAR_HOST_URL \
@@ -67,7 +64,6 @@ jobs:
       - run:
           name: Wait for SonarQube analysis to complete
           command: sleep 30  # Adjust wait time if necessary
-      
 
 workflows:
   build-and-test:
