@@ -30,3 +30,6 @@ This is a internal International Payment System that allows users to manage tran
 4. Go to view -> Terminal .. in backend enter npm run dev and in frontend enter npm start
 5. Application will open in the browser.
 6. navigate through the applocation.
+
+## Youtube Video Link
+https://youtu.be/bZYCf2X2uUo
