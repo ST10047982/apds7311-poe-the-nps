@@ -48,7 +48,7 @@ jobs:
           pkg-manager: npm
       - run:
           name: Install SonarQube Scanner globally
-          command: npm install -g sonar-scanner
+          command: sudo npm install -g sonar-scanner
       - run:
           name: Run SonarQube scan using the globally installed version
           command: |
