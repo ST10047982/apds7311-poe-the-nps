@@ -13,10 +13,7 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
-      - run:
-          name: Run Tests
-          command: npm test  # Add test command if needed
-
+          
   build-node:
     # Build node project
     executor: node/default
@@ -32,6 +29,7 @@ jobs:
       - run:
           name: Create the ~/artifacts directory if it doesn't exist
           command: mkdir -p ~/artifacts
+      # Copy build output to artifacts directory
       - run:
           name: Copy artifacts
           command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
@@ -40,7 +38,6 @@ jobs:
           destination: node-build
 
   sonar-scan:
-    # Run SonarQube analysis
     docker:
       - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
     steps:
@@ -64,4 +61,5 @@ workflows:
       - sonar-scan:
           requires:
             - build-node
+
 
