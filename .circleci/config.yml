@@ -54,6 +54,9 @@ jobs:
           name: Install SonarQube Scanner locally
           command: npm install --save-dev sonar-scanner
       - run:
+          name: Set executable permissions for sonar-scanner
+          command: chmod +x ./node_modules/sonar-scanner/bin/sonar-scanner
+      - run:
           name: Run SonarQube scan using the locally installed version
           command: |
             ./node_modules/.bin/sonar-scanner \
