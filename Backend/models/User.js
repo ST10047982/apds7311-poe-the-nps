@@ -1,3 +1,50 @@
+// import mongoose from 'mongoose';
+
+// // Define the User schema
+// const UserSchema = new mongoose.Schema({
+//     username: {
+//         type: String,
+//         required: true,
+//         unique: true,
+//         trim: true,
+//         match: /^[a-zA-Z0-9_]{3,30}$/,
+//     },
+//     fullName: {
+//         type: String,
+//         required: true,
+//         trim: true,
+//         match: /^[a-zA-Z\s]+$/, 
+//     },
+//     idNumber: {
+//         type: String,
+//         required: true,
+//         unique: true,
+//         trim: true,
+//         match: /^[0-9]{13}$/,
+//     },
+//     accountNumber: {
+//         type: String,
+//         required: true,
+//         unique: true,
+//         match: /^[0-9]{10,12}$/, 
+//     },
+//     password: {
+//         type: String,
+//         required: true,
+//    },
+//    status: {
+//     type: String,
+//     enum: ['pending', 'approved', 'rejected'],
+//     default: 'pending',
+//    }
+// });
+// // Export the User model
+// export default mongoose.model('User', UserSchema, 'users');
+
+// // This method was adapted from the Mongoose documentation on defining schemas
+// // https://mongoosejs.com/docs/guide.html
+
+
 import mongoose from 'mongoose';
 
 // Define the User schema
@@ -7,7 +54,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        match: /^[a-zA-Z0-9_]{3,30}$/,
+        match: /^\w{3,30}$/,
     },
     fullName: {
         type: String,
@@ -20,13 +67,13 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        match: /^[0-9]{13}$/,
+        match: /^\d{13}$/,
     },
     accountNumber: {
         type: String,
         required: true,
         unique: true,
-        match: /^[0-9]{10,12}$/, 
+        match: /^\d{10,12}$/, 
     },
     password: {
         type: String,
