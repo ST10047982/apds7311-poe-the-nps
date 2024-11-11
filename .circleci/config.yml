@@ -37,29 +37,20 @@ jobs:
           path: ~/artifacts
           destination: node-build
 
+jobs:
   sonar-scan:
-    # Run SonarQube scan
-    executor: node/default
-    working_directory: ~/project/frontend
+    docker:
+     - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
     steps:
-      - checkout:
-          path: ~/project
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          name: Install SonarQube Scanner globally
-          command: sudo npm install -g sonar-scanner
-      - run:
-          name: Run SonarQube scan using the globally installed version
+     - checkout
+     - run:
+          name: Run SonarQube scan
           command: |
             sonar-scanner \
               -Dsonar.projectKey=your_project_key \
               -Dsonar.sources=. \
               -Dsonar.host.url=$SONAR_HOST_URL \
               -Dsonar.login=$SONAR_TOKEN
-      - run:
-          name: Wait for SonarQube analysis to complete
-          command: sleep 30  # Adjust wait time if necessary
 
 workflows:
   build-and-test:
