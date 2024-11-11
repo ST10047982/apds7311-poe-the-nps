@@ -40,10 +40,10 @@ jobs:
 jobs:
   sonar-scan:
     docker:
-     - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
+      - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
     steps:
-     - checkout
-     - run:
+      - checkout
+      - run:
           name: Run SonarQube scan
           command: |
             sonar-scanner \
@@ -51,6 +51,7 @@ jobs:
               -Dsonar.sources=. \
               -Dsonar.host.url=$SONAR_HOST_URL \
               -Dsonar.login=$SONAR_TOKEN
+
 
 workflows:
   build-and-test:
