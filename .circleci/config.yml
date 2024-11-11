@@ -37,7 +37,6 @@ jobs:
           path: ~/artifacts
           destination: node-build
 
-jobs:
   sonar-scan:
     docker:
       - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
@@ -52,7 +51,6 @@ jobs:
               -Dsonar.host.url=$SONAR_HOST_URL \
               -Dsonar.login=$SONAR_TOKEN
 
-
 workflows:
   build-and-test:
     jobs:
@@ -62,5 +60,5 @@ workflows:
             - test-node
       - sonar-scan:
           requires:
-
             - build-node
+
