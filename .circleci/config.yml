@@ -51,13 +51,12 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: Install SonarQube Scanner
-          command: |
-            npm install -g sonar-scanner
+          name: Install SonarQube Scanner locally
+          command: npm install --save-dev sonar-scanner
       - run:
           name: Run SonarQube scan
           command: |
-            sonar-scanner \
+            ./node_modules/.bin/sonar-scanner \
               -Dsonar.projectKey=your_project_key \
               -Dsonar.sources=. \
               -Dsonar.host.url=$SONAR_HOST_URL \
