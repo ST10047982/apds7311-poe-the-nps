@@ -46,7 +46,7 @@ jobs:
           name: Run SonarQube scan
           command: |
             sonar-scanner \
-              -Dsonar.cloud ci.analysis=false \
+              -Dsonar.analysis.mode=preview \
               -Dsonar.projectKey=ST10047982_apds7311-poe-the-nps \
               -Dsonar.organization=st10047982 \
               -Dsonar.sources=. \
