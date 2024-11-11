@@ -8,16 +8,16 @@ import './Register.css'; // Import your CSS file for styling
 // Validation schema using Yup with updated regex patterns
 const validationSchema = Yup.object({
   username: Yup.string()
-    .matches(/^[a-zA-Z0-9_]{3,30}$/, 'Username must be 3-30 characters, alphanumeric, and can include underscores.')
+    .matches(/^\w{3,30}$/, 'Username must be 3-30 characters, alphanumeric, and can include underscores.')
     .required('Username is required'),
   fullName: Yup.string()
     .matches(/^[a-zA-Z\s]{1,50}$/, 'Full name can only contain letters and spaces and must be 1-50 characters.')
     .required('Full Name is required'),
   accountNumber: Yup.string()
-    .matches(/^[0-9]{10,12}$/, 'Account Number must be 10-12 digits')
+    .matches(/^\d{10,12}$/, 'Account Number must be 10-12 digits')
     .required('Account Number is required'),
   idNumber: Yup.string()
-    .matches(/^[0-9]{13}$/, 'ID Number must be a 13-digit number')
+    .matches(/^\d{13}$/, 'ID Number must be a 13-digit number')
     .required('ID Number is required'),
   password: Yup.string()
     .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, 'Password must be at least 8 characters, with at least one letter and one number.')

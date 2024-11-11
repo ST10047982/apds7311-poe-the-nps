@@ -26,41 +26,49 @@ function Login() {
     navigate('/forget-password');
   };
 
+  // Helper function to get the API path based on user type
+  const getApiPath = () => {
+    const apiPaths = {
+      Client: 'https://localhost:5000/api/auth/login/user',
+      Staff: 'https://localhost:5000/api/auth/login/staff',
+      Admin: 'https://localhost:5000/api/auth/login/admin',
+    };
+    return apiPaths[userType] || '';
+  };
+
+  // Helper function to get the redirect path based on user type
+  const getNavigatePath = () => {
+    const navigatePaths = {
+      Client: '/payments',
+      Staff: '/payment',
+      Admin: '/admin',
+    };
+    return navigatePaths[userType] || '';
+  };
+
   const handleLoginClick = async (values, { setSubmitting, setErrors, resetForm }) => {
     console.log("Login attempt with values:", values);
 
     try {
-      let apiPath;
-      if (userType === 'Client') {
-        apiPath = 'https://localhost:5000/api/auth/login/user';
-      } else if (userType === 'Staff') {
-        apiPath = 'https://localhost:5000/api/auth/login/staff';
-      } else if (userType === 'Admin') {
-        apiPath = 'https://localhost:5000/api/auth/login/admin';
-      }
+      const apiPath = getApiPath(); // Get the API path based on userType
+      const accountNumber = userType === 'Client' ? values.accountNumber : undefined;
 
       const response = await axios.post(apiPath, {
         username: values.username,
         password: values.password,
-        accountNumber: userType === 'Client' ? values.accountNumber : undefined,
+        accountNumber,
       });
 
       console.log("Response data:", response.data);
 
       localStorage.setItem('token', response.data.token);
 
-      // Redirect based on userType
-      if (userType === 'Client') {
-        navigate('/payments');
-      } else if (userType === 'Staff') {
-        navigate('/payment');
-      } else if (userType === 'Admin') {
-        navigate('/admin');
-      }
+      const redirectPath = getNavigatePath(); // Get the redirect path based on userType
+      navigate(redirectPath);
 
       // Clear the form fields after successful login
       resetForm();
-      
+
     } catch (err) {
       console.error("Login error:", err);
 

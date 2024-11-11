@@ -20,6 +20,7 @@ const userSchema = Joi.object({
     password: Joi.string().min(8).pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/).required()
 });
 
+
 // Joi schema for input validation
 const registrationSchema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
@@ -33,6 +34,8 @@ const loginSchema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
     password: Joi.string().required(),
 });
+
+
 
 // Registration Route for Users
 router.post('/register', async (req, res) => {
@@ -168,23 +171,27 @@ router.post('/register/admin', async (req, res) => {
 
 // Update Password - Staff
 router.post('/staff/forget-password', async (req, res) => {
-    const { username, newPassword } = req.body;
+    // Define Joi schema for input validation
+    const schema = Joi.object({
+        username: Joi.string().alphanum().min(3).max(30).required(),
+        newPassword: Joi.string().min(8).pattern(/^(?=.*[A-Za-z])(?=.*\d)/).required()
+            .messages({
+                'string.pattern.base': 'Password must contain at least one letter and one number.'
+            }),
+    });
 
     if (!username || !newPassword) {
         return res.status(400).json({ message: 'staff and new password are required.' });
     }
 
     try {
+        // Validate and sanitize the input data
+        const { username, newPassword } = await schema.validateAsync(req.body);
+
         // Find the staff member by username
         const staff = await Staff.findOne({ username });
         if (!staff) {
             return res.status(404).json({ message: 'Staff member not found.' });
-        }
-
-         // Validate the new password using regex (at least 8 characters, one letter, one number)
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        if (!passwordRegex.test(newPassword)) {
-            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
         }
  
          // Hash the new password
@@ -196,29 +203,38 @@ router.post('/staff/forget-password', async (req, res) => {
 
         res.status(200).json({ message: 'Password updated successfully.' });
     } catch (err) {
-        res.status(500).json({ message: 'Internal Server Error', error: err.message });
+        // Handle validation errors and other errors
+        if (err.isJoi) {
+            return res.status(400).json({ message: err.details[0].message });
+        }
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
 // Update Password - Admin
 router.post('/admin/forget-password', async (req, res) => {
-    const { username, newPassword } = req.body;
+    // Define Joi schema for input validation
+    const schema = Joi.object({
+        username: Joi.string().alphanum().min(3).max(30).required(),
+        newPassword: Joi.string().min(8).pattern(/^(?=.*[A-Za-z])(?=.*\d)/).required()
+            .messages({
+                'string.pattern.base': 'Password must contain at least one letter and one number.'
+            }),
+    });
 
     if (!username || !newPassword) {
         return res.status(400).json({ message: 'Username and new password are required.' });
     }
 
     try {
-        // Find the admin member by username
-        const admin = await Staff.findOne({ username });
+        // Validate and sanitize the input data
+        const { username, newPassword } = await schema.validateAsync(req.body);
+
+        // Find the admin member by sanitized username
+        const admin = await Staff.findOne({ username: username }).exec();
         if (!admin) {
             return res.status(404).json({ message: 'Admin member not found.' });
-        }
-
-        // Validate the new password using regex (at least 8 characters, one letter, one number)
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        if (!passwordRegex.test(newPassword)) {
-            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
         }
 
         // Hash the new password
@@ -230,30 +246,39 @@ router.post('/admin/forget-password', async (req, res) => {
 
         res.status(200).json({ message: 'Password updated successfully.' });
     } catch (err) {
-        res.status(500).json({ message: 'Internal Server Error', error: err.message });
+        // Handle validation errors and other errors
+        if (err.isJoi) {
+            return res.status(400).json({ message: err.details[0].message });
+        }
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 
 
 // Update Password - User
 router.post('/user/forget-password', async (req, res) => {
-    const { username, newPassword } = req.body;
+    // Define Joi schema for input validation
+    const schema = Joi.object({
+        username: Joi.string().alphanum().min(3).max(30).required(),
+        newPassword: Joi.string().min(8).pattern(/^(?=.*[A-Za-z])(?=.*\d)/).required()
+            .messages({
+                'string.pattern.base': 'Password must contain at least one letter and one number.'
+            }),
+    });
 
     if (!username || !newPassword) {
         return res.status(400).json({ message: 'Username and new password are required.' });
     }
 
     try {
+        // Validate and sanitize the input data
+        const { username, newPassword } = await schema.validateAsync(req.body);
+
         // Find the staff member by username
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(404).json({ message: 'User member not found.' });
-        }
-
-        // Validate the new password using regex (at least 8 characters, one letter, one number)
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-        if (!passwordRegex.test(newPassword)) {
-            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
         }
 
         // Hash the new password
@@ -265,7 +290,12 @@ router.post('/user/forget-password', async (req, res) => {
 
         res.status(200).json({ message: 'Password updated successfully.' });
     } catch (err) {
-        res.status(500).json({ message: 'Internal Server Error', error: err.message });
+         // Handle validation errors and other errors
+         if (err.isJoi) {
+            return res.status(400).json({ message: err.details[0].message });
+        }
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 });
 
