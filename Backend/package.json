@@ -28,7 +28,7 @@
     "https": "^1.0.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "4.0",
+    "mongodb": "4.17",
     "mongoose": "^8.7.0",
     "morgan": "^1.10.0",
     "patch-package": "^8.0.0",
