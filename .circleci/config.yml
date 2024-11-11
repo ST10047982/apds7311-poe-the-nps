@@ -13,10 +13,6 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
-      # Optionally uncomment and run tests if you have tests
-      # - run:
-      #     name: Run tests
-      #     command: npm test --passWithNoTests
 
   build-node:
     # Build node project
@@ -42,29 +38,18 @@ jobs:
           destination: node-build
 
   sonar-scan:
-    # Run SonarQube scan
-    executor: node/default
-    working_directory: ~/project/frontend
+    docker:
+      - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
     steps:
-      - checkout:
-          path: ~/project
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          name: Install SonarQube Scanner
-          command: |
-            npm install -g sonar-scanner
+      - checkout
       - run:
           name: Run SonarQube scan
           command: |
             sonar-scanner \
-              -Dsonar.projectKey=your_project_key \
+              -Dsonar.projectKey=ST10047982_apds7311-poe-the-nps \
               -Dsonar.sources=. \
-              -Dsonar.host.url=$SONAR_HOST_URL \
-              -Dsonar.login=$SONAR_TOKEN
-      - run:
-          name: Wait for SonarQube analysis to complete
-          command: sleep 30  # Adjust wait time if necessary
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=378ce0e2fc66913e2a884c7d7ffad71c7bc71b5d
 
 workflows:
   build-and-test:
@@ -76,3 +61,4 @@ workflows:
       - sonar-scan:
           requires:
             - build-node
+

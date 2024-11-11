@@ -18,9 +18,23 @@ connectDB();
 app.use(helmet()); // Security headers
 app.use(express.json()); // Parse JSON bodies
 app.use(morgan('combined')); // Log HTTP requests
+
 app.use(cors({
     origin: 'http://localhost:3000'
  })),
+
+
+app.use(cors({})); // Enable CORS for specified origins
+
+// Apply rate limiting to all API routes
+app.use(limiter);
+
+
+
+//CORS
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
 
 // Routes
 app.use('/api/auth', authRoutes);

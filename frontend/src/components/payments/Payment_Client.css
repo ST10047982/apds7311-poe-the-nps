@@ -86,6 +86,8 @@ button:hover {
   padding: 12px;
   text-align: left;
   border: 1px solid #ddd;
+  font-size: 14px;
+  color: #333;
 }
 
 .transactions-table th {
@@ -99,12 +101,6 @@ button:hover {
 
 .transactions-table tr:hover {
   background-color: #e6f7ff;
-}
-
-.transactions-table th,
-.transactions-table td {
-  font-size: 14px;
-  color: #333;
 }
 
 .transactions-table td {
