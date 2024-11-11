@@ -52,7 +52,7 @@ jobs:
           pkg-manager: npm
       - run:
           name: Install SonarQube Scanner locally
-          command: npm install sonar-scanner --save-dev
+          command: npm install --save-dev sonar-scanner
       - run:
           name: Run SonarQube scan
           command: |
