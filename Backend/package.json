@@ -32,7 +32,7 @@
     "mongoose": "^8.7.0",
     "morgan": "^1.10.0",
     "patch-package": "^8.0.0",
-    "postinstall": "^0.7.5",
+    "postinstall": "^0.11.0",
     "underscore": "^1.13.7"
   },
   "devDependencies": {
