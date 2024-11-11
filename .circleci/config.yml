@@ -15,7 +15,7 @@ jobs:
           pkg-manager: npm
 
   build-node:
-    # Build node project
+    # Build node projects
     executor: node/default
     working_directory: ~/project/frontend
     steps:
