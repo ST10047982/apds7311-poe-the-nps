@@ -54,6 +54,9 @@ jobs:
           name: Install SonarQube Scanner locally
           command: npm install --save-dev sonar-scanner
       - run:
+          name: Add execute permissions for sonar-scanner
+          command: chmod +x ./node_modules/.bin/sonar-scanner
+      - run:
           name: Run SonarQube scan using the locally installed version
           command: |
             ./node_modules/.bin/sonar-scanner \
@@ -63,7 +66,7 @@ jobs:
               -Dsonar.login=$SONAR_TOKEN
       - run:
           name: Wait for SonarQube analysis to complete
-          command: sleep 30  # Adjust wait time if necessary
+          command: sleep 30
 
 workflows:
   build-and-test:
