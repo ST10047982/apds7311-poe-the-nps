@@ -22,7 +22,7 @@ app.use(morgan('combined')); // Log HTTP requests
 //CORS
  app.use(cors({
     origin: 'http://localhost:3000'
- },
+ })),
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', transactionRoutes);
