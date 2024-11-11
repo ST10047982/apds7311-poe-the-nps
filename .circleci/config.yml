@@ -78,4 +78,5 @@ workflows:
             - test-node
       - sonar-scan:
           requires:
+
             - build-node
