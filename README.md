@@ -2,7 +2,7 @@
 
 This is a internal International Payment System that allows users to manage transactions between accounts.
 
-## Features
+## Features:
 
 - User, Admin and Staff Login
 - User Registration
@@ -14,14 +14,14 @@ This is a internal International Payment System that allows users to manage tran
 - Retrieve all transactions for Staff
 - Retrieve transactions for specific logged in User
 
-## Technologies
+## Technologies:
 
 - **Backend**: Node.js, Express, MongoDB
 - **Frontend**: React
 - **Authentication**: JSON Web Tokens (JWT)
 - **Logging**: Console logging for error tracking and debugging
 
-## Installation
+## Installation:
 
 1. Clone the repository.
 2. Open Visual Studio Code.
@@ -31,5 +31,5 @@ This is a internal International Payment System that allows users to manage tran
 5. Application will open in the browser.
 6. navigate through the applocation.
 
-## Youtube Video Link
+## Youtube Video Link:
 https://youtu.be/bZYCf2X2uUo
