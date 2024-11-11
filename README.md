@@ -4,10 +4,15 @@ This is a internal International Payment System that allows users to manage tran
 
 ## Features
 
-- User and Staff authentication
-- Create, read, update, and delete transactions
+- User, Admin and Staff Login
+- User Registration
+- User Approval by Admin
+- Staff registration by Admin
+- Forget Password
+- Create, read, update, and delete transactions between Users and Staff
 - Input validation 
-- Retrieve all transactions
+- Retrieve all transactions for Staff
+- Retrieve transactions for specific logged in User
 
 ## Technologies
 
