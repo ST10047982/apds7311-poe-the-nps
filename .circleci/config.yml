@@ -13,7 +13,7 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
-          
+
   build-node:
     # Build node project
     executor: node/default
@@ -37,19 +37,19 @@ jobs:
           path: ~/artifacts
           destination: node-build
 
-sonar-scan:
-  docker:
-    - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
-  steps:
-    - checkout
-    - run:
-        name: Run SonarQube scan
-        command: |
-          sonar-scanner \
-            -Dsonar.projectKey=ST10047982_apds7311-poe-the-nps \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=378ce0e2fc66913e2a884c7d7ffad71c7bc71b5d
+  sonar-scan:
+    docker:
+      - image: sonarsource/sonar-scanner-cli:latest  # Image with sonar-scanner pre-installed
+    steps:
+      - checkout
+      - run:
+          name: Run SonarQube scan
+          command: |
+            sonar-scanner \
+              -Dsonar.projectKey=ST10047982_apds7311-poe-the-nps \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=378ce0e2fc66913e2a884c7d7ffad71c7bc71b5d
 
 workflows:
   build-and-test:
@@ -61,5 +61,4 @@ workflows:
       - sonar-scan:
           requires:
             - build-node
-
 
