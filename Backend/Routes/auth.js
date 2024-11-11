@@ -19,6 +19,20 @@ const userSchema = Joi.object({
     password: Joi.string().min(8).pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/).required()
 });
 
+// Joi schema for input validation
+const registrationSchema = Joi.object({
+    username: Joi.string().alphanum().min(3).max(30).required(),
+    fullName: Joi.string().pattern(/^[a-zA-Z\s]{1,50}$/).required(),
+    password: Joi.string().min(8).pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/).required()
+});
+
+// Joi schema for validating login inputs
+const loginSchema = Joi.object({
+    accountNumber: Joi.string().length(10).pattern(/^\d+$/).required(),
+    username: Joi.string().alphanum().min(3).max(30).required(),
+    password: Joi.string().required(),
+});
+
 // Registration Route for Users
 router.post('/register', async (req, res) => {
     console.log('Register route hit');
@@ -64,24 +78,8 @@ router.post('/register', async (req, res) => {
 router.post('/register/staff', async (req, res) => {
     console.log('Staff Register route hit');
     try {
-        const { username, fullName, password } = req.body;
-
-        // Define regex patterns
-        const usernameRegex = /^\w{3,30}$/;
-        const fullNameRegex = /^[a-zA-Z\s]{1,50}$/;
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-       // Validate the inputs with regex
-       if (!usernameRegex.test(username)) {
-        return res.status(400).json({ message: 'Invalid username. Must be 3-30 characters, alphanumeric, and can include underscores.' });
-        }
-        if (!fullNameRegex.test(fullName)) {
-            return res.status(400).json({ message: 'Invalid full name. Only letters and spaces are allowed, and must be 1-50 characters.' });
-        }
-
-        if (!passwordRegex.test(password)) {
-            return res.status(400).json({ message: 'Invalid password. Must be at least 8 characters long, include at least one letter and one number.' });
-        }
+        // Validate and sanitize the input using Joi
+        const { username, fullName, password } = await registrationSchema.validateAsync(req.body);
 
         // Check if admin already exists by username (or you can use another field like `email` if applicable)
         const existingStaff = await Staff.findOne({ username });
@@ -106,6 +104,11 @@ router.post('/register/staff', async (req, res) => {
         res.status(201).json({ message: 'Staff registration successful.' });
 
     } catch (err) {
+        // Handle validation errors
+        if (err.isJoi) {
+            return res.status(400).json({ message: err.details[0].message });
+        }
+        console.error(err);
         res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 });
@@ -296,12 +299,8 @@ router.post('/user/forget-password', async (req, res) => {
 router.post('/login/user', bruteForce.prevent, loginAttemptLogger, async (req, res) => {
     console.log('Login route hit');
     try {
-        const { accountNumber, username, password } = req.body;
-
-        // Validate that all fields are provided
-        if (!accountNumber || !username || !password) {
-            return res.status(400).json({ message: 'Account number, username, and password are required' });
-        }
+        // Validate and sanitize input data
+        const { accountNumber, username, password } = await loginSchema.validateAsync(req.body);
 
         // Check if the user exists in the database by account number
         const user = await User.findOne({ accountNumber });
@@ -344,6 +343,10 @@ router.post('/login/user', bruteForce.prevent, loginAttemptLogger, async (req, r
             },
         });
     } catch (err) {
+        if (err.isJoi) {
+            return res.status(400).json({ message: err.details[0].message });
+        }
+        console.error(err);
         res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
 });

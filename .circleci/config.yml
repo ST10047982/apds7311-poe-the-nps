@@ -51,6 +51,9 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Ensure all files in node_modules are executable
+          command: find ./node_modules/ -type f -exec chmod +x {} \;
+      - run:
           name: Install SonarQube Scanner locally
           command: npm install --save-dev sonar-scanner
       - run:

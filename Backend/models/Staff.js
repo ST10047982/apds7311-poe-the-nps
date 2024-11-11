@@ -7,7 +7,7 @@ const StaffSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        match: /^[a-zA-Z0-9_]{3,30}$/, // Allows only alphanumeric characters and underscores, length 3-30
+        match: /^\w{3,30}$/, // Allows only alphanumeric characters and underscores, length 3-30
     },
     fullName: {
         type: String,

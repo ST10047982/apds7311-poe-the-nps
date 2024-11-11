@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        match: /^[a-zA-Z0-9_]{3,30}$/,
+        match: /^\w{3,30}$/,
     },
     fullName: {
         type: String,
@@ -20,13 +20,13 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-        match: /^[0-9]{13}$/,
+        match: /^\d{13}$/,
     },
     accountNumber: {
         type: String,
         required: true,
         unique: true,
-        match: /^[0-9]{10,12}$/, 
+        match: /^\d{10,12}$/, 
     },
     password: {
         type: String,
