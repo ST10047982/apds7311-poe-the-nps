@@ -13,10 +13,6 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
-      # Optionally uncomment and run tests if you have tests
-      # - run:
-      #     name: Run tests
-      #     command: npm test --passWithNoTests
 
   build-node:
     # Build node project
@@ -54,8 +50,8 @@ jobs:
           name: Install SonarQube Scanner locally
           command: npm install --save-dev sonar-scanner
       - run:
-          name: Set executable permissions for sonar-scanner
-          command: chmod +x ./node_modules/sonar-scanner/bin/sonar-scanner
+          name: Set permissions as root
+          command: sudo chmod +x ./node_modules/.bin/sonar-scanner
       - run:
           name: Run SonarQube scan using the locally installed version
           command: |
