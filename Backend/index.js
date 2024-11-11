@@ -19,6 +19,7 @@ connectDB();
 app.use(helmet()); // Security headers
 app.use(express.json()); // Parse JSON bodies
 app.use(morgan('combined')); // Log HTTP requests
+//CORS
  app.use(cors({
     origin: 'http://localhost:3000'
  },
