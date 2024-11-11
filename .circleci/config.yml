@@ -47,6 +47,7 @@ jobs:
           command: |
             sonar-scanner \
               -Dsonar.projectKey=ST10047982_apds7311-poe-the-nps \
+              -Dsonar.organization=st10047982 \
               -Dsonar.sources=. \
               -Dsonar.host.url=https://sonarcloud.io \
               -Dsonar.login=378ce0e2fc66913e2a884c7d7ffad71c7bc71b5d
