@@ -13,11 +13,7 @@ jobs:
           path: ~/project
       - node/install-packages:
           pkg-manager: npm
-      # Optionally uncomment and run tests if you have tests
-      # - run:
-      #     name: Run tests
-      #     command: npm test --passWithNoTests
-
+          
   build-node:
     # Build node project
     executor: node/default
@@ -51,11 +47,10 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
-          name: Install SonarQube Scanner
-          command: |
-            npm install -g sonar-scanner
+          name: Install SonarQube Scanner globally
+          command: sudo npm install -g sonar-scanner
       - run:
-          name: Run SonarQube scan
+          name: Run SonarQube scan using the globally installed version
           command: |
             sonar-scanner \
               -Dsonar.projectKey=your_project_key \
@@ -75,4 +70,5 @@ workflows:
             - test-node
       - sonar-scan:
           requires:
+
             - build-node

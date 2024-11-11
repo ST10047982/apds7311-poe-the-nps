@@ -221,10 +221,10 @@ function Payments_Client() {
         </thead>
         <tbody>
           {transactions.length > 0 ? (
-            transactions.map((transaction, index) => (
-              <tr key={index}>
-               <td>{transaction.fromAccount?.accountNumber}</td>
-               <td>{transaction.toAccount?.accountNumber}</td>
+            transactions.map((transaction) => (
+              <tr key={transaction._id}>  {/* Use a unique identifier from the transaction */}
+                <td>{transaction.fromAccount?.accountNumber}</td>
+                <td>{transaction.toAccount?.accountNumber}</td>
                 <td>{transaction.amount}</td>
                 <td>{transaction.currency}</td>
                 <td>{transaction.paymentMethod}</td>
