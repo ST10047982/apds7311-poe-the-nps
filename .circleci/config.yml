@@ -51,6 +51,9 @@ jobs:
       - node/install-packages:
           pkg-manager: npm
       - run:
+          name: Make sonar-scanner executable
+          command: chmod +x ./node_modules/sonar-scanner/bin/sonar-scanner
+      - run:
           name: Install SonarQube Scanner locally
           command: npm install --save-dev sonar-scanner
       - run:
@@ -64,6 +67,7 @@ jobs:
       - run:
           name: Wait for SonarQube analysis to complete
           command: sleep 30  # Adjust wait time if necessary
+      
 
 workflows:
   build-and-test:
